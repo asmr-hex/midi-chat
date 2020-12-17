@@ -1,14 +1,21 @@
-import React, { useState } from 'react'
-import { BrowserRouter as Router, useLocation } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import logo from './logo.svg';
 import './App.css';
 import { useUsernameContext } from './context/username'
+import { WsProvider } from './context/ws'
 
 
 const SetUsername = props => {
-  const { setUsername } = props
+  const { setSessionId, setUsername } = useUsernameContext()
   const [newUsername, setNewUsername] = useState('')
+  const { sessionId } = useParams()
 
+  useEffect(() => {
+    setSessionId(sessionId)
+  }, [])
+
+  
   const onChange = e => {
     setNewUsername(e.target.value)
   }
@@ -34,27 +41,25 @@ const SetUsername = props => {
 // generate random room name with https://www.npmjs.com/package/random-words
 
 const Main = props => {
-  const location = useLocation()
-  console.log(location.pathname)
   const { username } = props
   return (
-    <div>
-      {username}
-    </div>
+    <WsProvider>
+      <div>
+        {username}
+      </div>
+    </WsProvider>
   )
 }
 
 function App() {
-  const { username, setUsername } = useUsernameContext()
+  const { username, sessionId, setUsername } = useUsernameContext()
   
   return (
-    <Router>
-      <div className="App">
-        {
-          username === null ? <SetUsername setUsername={setUsername}/> : <Main username={username}/>
-        }
-      </div>
-    </Router>
+    <div className="App">
+      {
+        username === null || sessionId === null ? <SetUsername/> : <Main username={username}/>
+      }
+    </div>
   );
 }
 

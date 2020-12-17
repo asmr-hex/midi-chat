@@ -10,6 +10,7 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin:     func(r *http.Request) bool { return true }, // TODO eventually only whitelist the app url
 }
 
 // serveWs handles websocket requests from the peer.

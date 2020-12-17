@@ -14,10 +14,13 @@ export const useUsernameContext = () => {
 
 export const UsernameProvider = props => {
   const [username, setUsername] = useState(null)
+  const [sessionId, setSessionId] = useState(null)
 
   const context = {
     username,
     setUsername,
+    sessionId,
+    setSessionId,
   }
   
   return (

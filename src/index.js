@@ -3,14 +3,29 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom'
+import randomWord from 'random-words'
 import { UsernameProvider } from './context/username'
+import { MidiProvider } from './context/midi'
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <UsernameProvider>
-      <App />
-    </UsernameProvider>
+    <MidiProvider>
+      <UsernameProvider>
+        <Router>
+          <Switch>
+            <Route exact path="/" children={<Redirect to={{pathname: `/${randomWord({exactly: 2, join:'-'})}`}}/>}/>
+            <Route path="/:sessionId" children={<App />}/>
+          </Switch>
+        </Router>
+      </UsernameProvider>
+    </MidiProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
