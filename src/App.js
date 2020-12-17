@@ -38,8 +38,6 @@ const SetUsername = props => {
   )
 }
 
-// generate random room name with https://www.npmjs.com/package/random-words
-
 const Main = props => {
   const { username } = props
   return (

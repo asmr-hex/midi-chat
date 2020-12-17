@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
 type Registry struct {
 	rooms      map[string]*Room
@@ -18,8 +21,8 @@ func (r *Registry) run() {
 	for {
 		select {
 		case room := <-r.unregister:
-			log.Println("deleting room: ", room.name)
 			if _, ok := r.rooms[room.name]; ok {
+				log.Println(fmt.Sprintf("deleting room '%s'", room.name))
 				delete(r.rooms, room.name)
 			}
 		}
@@ -28,7 +31,7 @@ func (r *Registry) run() {
 
 func (r *Registry) get(name string) *Room {
 	if _, ok := r.rooms[name]; !ok {
-		log.Println("creating new room: ", name)
+		log.Println(fmt.Sprintf("creating new room '%s'", name))
 		r.rooms[name] = newRoom(name, r)
 		go r.rooms[name].run()
 	}

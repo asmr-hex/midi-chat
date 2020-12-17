@@ -16,18 +16,38 @@ export const useWsContext = () => {
 
 
 export const WsProvider = props => {
-  const { midiAccess } = useMidiContext()
-  const { username, sessionId } = useUsernameContext()
+  const { midiAccess, consumeMidi, setBroadcastMidi } = useMidiContext()
+  const { username, sessionId, updateUsers } = useUsernameContext()
   const [socket, setSocket] = useState(null)
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8081/${sessionId}`) // TODO change url
+    const ws = new WebSocket(`ws://localhost:8081/${sessionId}/${username}`) // TODO change url
 
     ws.onopen = () => {
-      ws.send({type: 'register', user: username, room: sessionId})
+      console.log("connected.")
     }
-    ws.onmessage = m => console.log(m.data) // TODO use midi Access....
+    ws.onmessage = m => {
+      const msg = JSON.parse(m.data)
+      switch (msg.type) {
+      case 'MIDI':
+        consumeMidi(msg)
+        break
+      case 'USER_REGISTRATION':
+        updateUsers(msg)
+        break
+      default:
+        // ummm
+      }
+    }
 
+    // set the broadCast midi function for use in midi onevent handler
+    setBroadcastMidi(midiMsg => ws.send({
+      type: 'MIDI',
+      user: username,
+      room: sessionId,
+      data: midiMsg,
+    }))
+    
     setSocket(ws)
   }, [])
   

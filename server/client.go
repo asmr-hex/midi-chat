@@ -28,6 +28,7 @@ var (
 )
 
 type Client struct {
+	name string
 	room *Room
 	conn *websocket.Conn
 	send chan []byte
@@ -50,6 +51,9 @@ func (c *Client) read() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+
+		// TODO handle message.
+
 		c.room.broadcast <- message
 	}
 }

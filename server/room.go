@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"log"
+)
+
 type Room struct {
 	name string
 
@@ -33,9 +38,11 @@ func (p *Room) run() {
 	for {
 		select {
 		case client := <-p.register:
+			log.Println(fmt.Sprintf("registering user '%s' with room '%s'", client.name, p.name))
 			p.clients[client] = true
 		case client := <-p.unregister:
 			if _, ok := p.clients[client]; ok {
+				log.Println(fmt.Sprintf("removing user '%s' from room '%s'", client.name, p.name))
 				delete(p.clients, client)
 				close(client.send)
 			}

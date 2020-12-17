@@ -14,7 +14,7 @@ var upgrader = websocket.Upgrader{
 }
 
 // serveWs handles websocket requests from the peer.
-func ServeWs(roomName string, registry *Registry, w http.ResponseWriter, r *http.Request) {
+func ServeWs(roomName string, userName string, registry *Registry, w http.ResponseWriter, r *http.Request) {
 	// upgrade to web sockets
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -26,7 +26,7 @@ func ServeWs(roomName string, registry *Registry, w http.ResponseWriter, r *http
 	room := registry.get(roomName)
 
 	// create a new connection
-	client := &Client{room: room, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{name: userName, room: room, conn: conn, send: make(chan []byte, 256)}
 
 	// add new client to existing room in registry
 	room.register <- client

@@ -21,10 +21,9 @@ func main() {
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "OK")
 	})
-	r.HandleFunc("/{room}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/{room}/{username}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		log.Println("client connecting to room ", vars["room"])
-		ServeWs(vars["room"], registry, w, r)
+		ServeWs(vars["room"], vars["username"], registry, w, r)
 	})
 
 	log.Println("listening on ", *addr)
